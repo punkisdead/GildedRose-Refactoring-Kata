@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
+# This is a Ruby implementation of the Gilded Rose kata, which simulates the behavior of an inventory system for items with varying qualities and sell-by dates.
 class GildedRose
   def initialize(items)
     @items = items
   end
 
+  # rubocop:disable Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def update_quality
     @items.each do |item|
       if (item.name != 'Aged Brie') && (item.name != 'Backstage passes to a TAFKAL80ETC concert')
@@ -31,7 +36,12 @@ class GildedRose
     end
   end
 end
+# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
 
+# The item class which models items in the kata
 class Item
   attr_accessor :name, :sell_in, :quality
 
