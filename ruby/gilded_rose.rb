@@ -7,22 +7,17 @@ class GildedRose
     @items = items
   end
 
-  SPECIAL_ITEMS = [
-    "Aged Brie",
-    "Backstage passes to a TAFKAL80ETC concert",
-    "Sulfuras, Hand of Ragnaros"
-  ].freeze
-
   def update_quality
     @items.each do |item|
-      if !SPECIAL_ITEMS.include?(item.name)
-        update_normal_item(item)
-      elsif item.name == "Aged Brie"
+      case item.name
+      when "Aged Brie"
         update_brie(item)
-      elsif item.name == "Sulfuras, Hand of Ragnaros"
+      when "Sulfuras, Hand of Ragnaros"
         update_sulfuras(item)
-      elsif item.name == "Backstage passes to a TAFKAL80ETC concert"
+      when "Backstage passes to a TAFKAL80ETC concert"
         update_backstage_passes(item)
+      else
+        update_normal_item(item)
       end
     end
   end
