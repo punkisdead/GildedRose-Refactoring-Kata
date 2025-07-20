@@ -22,6 +22,9 @@ class GildedRose
       if !SPECIAL_ITEMS.include?(item.name)
         update_normal_item(item)
         next
+      elsif item.name == "Aged Brie"
+        update_brie(item)
+        next
       elsif (item.name != 'Aged Brie') && (item.name != 'Backstage passes to a TAFKAL80ETC concert')
         item.quality = item.quality - 1 if item.quality.positive? && (item.name != 'Sulfuras, Hand of Ragnaros')
       elsif item.quality < 50
@@ -58,6 +61,14 @@ class GildedRose
 
     item.quality -= 1
     item.quality -= 1 if item.sell_in <= 0
+  end
+
+  def update_brie(item)
+    item.sell_in -= 1
+    return if item.quality >= 50
+
+    item.quality += 1 if item.quality < 50
+    item.quality += 1 if item.sell_in <= 0 && item.quality < 50
   end
 end
 
