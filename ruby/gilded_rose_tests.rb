@@ -3,6 +3,7 @@
 require 'minitest/autorun'
 require_relative 'gilded_rose'
 
+# Gilded Rose test suite
 class TestGildedRose < Minitest::Test
   def test_foo
     items = [Item.new('foo', 0, 0)]

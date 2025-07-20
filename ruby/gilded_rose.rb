@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# This is a Ruby implementation of the Gilded Rose kata, which simulates the behavior of an inventory system for items with varying qualities and sell-by dates.
+# This is a Ruby implementation of the Gilded Rose kata, which simulates the behavior of an inventory system for items
+# with varying qualities and sell-by dates.
 class GildedRose
   def initialize(items)
     @items = items
