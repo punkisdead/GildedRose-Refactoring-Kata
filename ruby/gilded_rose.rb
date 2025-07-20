@@ -13,45 +13,19 @@ class GildedRose
     "Sulfuras, Hand of Ragnaros"
   ].freeze
 
-  # rubocop:disable Metrics/PerceivedComplexity
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Metrics/AbcSize
   def update_quality
     @items.each do |item|
       if !SPECIAL_ITEMS.include?(item.name)
         update_normal_item(item)
-        next
       elsif item.name == "Aged Brie"
         update_brie(item)
-        next
-      elsif (item.name != 'Aged Brie') && (item.name != 'Backstage passes to a TAFKAL80ETC concert')
-        item.quality = item.quality - 1 if item.quality.positive? && (item.name != 'Sulfuras, Hand of Ragnaros')
-      elsif item.quality < 50
-        item.quality = item.quality + 1
-        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-          item.quality = item.quality + 1 if (item.sell_in < 11) && (item.quality < 50)
-          item.quality = item.quality + 1 if (item.sell_in < 6) && (item.quality < 50)
-        end
-      end
-      item.sell_in = item.sell_in - 1 if item.name != 'Sulfuras, Hand of Ragnaros'
-      if item.sell_in.negative?
-        if item.name != 'Aged Brie'
-          if item.name != 'Backstage passes to a TAFKAL80ETC concert'
-            item.quality = item.quality - 1 if item.quality.positive? && (item.name != 'Sulfuras, Hand of Ragnaros')
-          else
-            item.quality = item.quality - item.quality
-          end
-        elsif item.quality < 50
-          item.quality = item.quality + 1
-        end
+      elsif item.name == "Sulfuras, Hand of Ragnaros"
+        update_sulfuras(item)
+      elsif item.name == "Backstage passes to a TAFKAL80ETC concert"
+        update_backstage_passes(item)
       end
     end
   end
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
 
   private
 
@@ -69,6 +43,25 @@ class GildedRose
 
     item.quality += 1 if item.quality < 50
     item.quality += 1 if item.sell_in <= 0 && item.quality < 50
+  end
+
+  def update_sulfuras(item)
+    # "Sulfuras, Hand of Ragnaros" is a legendary item and does not change
+  end
+
+  def update_backstage_passes(item)
+    item.sell_in -= 1
+    return if item.quality >= 50
+    item.quality += 1 if item.quality < 50
+    if item.sell_in < 11
+      item.quality += 1 if item.quality < 50
+    end
+    if item.sell_in < 6
+      item.quality += 1 if item.quality < 50
+    end
+    if item.sell_in < 0
+      item.quality = 0 # Backstage passes drop to 0 quality after the concert
+    end
   end
 end
 
