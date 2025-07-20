@@ -1,2 +1,43 @@
-.idea
-*.iml
+# Coverage reports
+coverage/
+
+# Bundler
+vendor/bundle/
+.bundle/
+
+# RSpec
+.rspec_status
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ruby version managers
+.rbenv-version
+.rvmrc
+
+# Gem files
+*.gem
+
+# Documentation
+doc/
+.yardoc/

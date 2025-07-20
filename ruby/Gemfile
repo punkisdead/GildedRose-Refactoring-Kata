@@ -1,0 +1,39 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+ruby '>= 2.7.0'
+
+group :development, :test do
+  # Testing framework
+  gem 'rspec', '~> 3.12'
+  
+  # Code coverage
+  gem 'simplecov', '~> 0.22', require: false
+  
+  # Code quality and linting
+  gem 'rubocop', '~> 1.77'
+  gem 'rubocop-rspec', '~> 3.0', require: false
+  
+  # Language server for IDE support
+  gem 'solargraph', '~> 0.50'
+  
+  # Development tools
+  gem 'guard', '~> 2.18'
+  gem 'guard-rspec', '~> 4.7'
+  gem 'guard-rubocop', '~> 1.5'
+  
+  # Test utilities
+  gem 'factory_bot', '~> 6.4'
+  gem 'faker', '~> 3.2'
+  
+  # Development server (if needed for coverage reports)
+  gem 'webrick', '~> 1.8'
+end
+
+group :development do
+  # Debugging tools
+  gem 'debug', '~> 1.9', require: false
+  gem 'pry', '~> 0.14'
+  gem 'pry-byebug', '~> 3.10'
+end
