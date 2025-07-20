@@ -319,8 +319,111 @@ describe GildedRose do
     describe 'Conjured Items (Future Implementation)' do
       let(:item) { conjured_item }
 
-      it 'degrades conjured items twice as fast before sell date'
-      it 'degrades conjured items four times as fast after sell date'
+      context 'before sell date' do
+        let(:sell_in) { 5 }
+        let(:quality) { 20 }
+
+        it 'degrades twice as fast as normal items' do
+          update_quality
+          expect(item.quality).to eq(18) # decreases by 2 instead of 1
+        end
+
+        it 'decreases sell_in by 1 each day' do
+          update_quality
+          expect(item.sell_in).to eq(4)
+        end
+
+        context 'with zero quality' do
+          let(:quality) { 0 }
+
+          it 'never has negative quality' do
+            update_quality
+            expect(item.quality).to eq(0)
+          end
+        end
+
+        context 'with low quality' do
+          let(:quality) { 1 }
+
+          it 'cannot go below zero quality' do
+            update_quality
+            expect(item.quality).to eq(0)
+          end
+        end
+      end
+
+      context 'after sell date' do
+        let(:sell_in) { -1 }
+        let(:quality) { 20 }
+
+        it 'degrades four times as fast as normal items' do
+          update_quality
+          expect(item.quality).to eq(16) # decreases by 4 instead of 2
+        end
+
+        context 'with quality less than degradation amount' do
+          let(:quality) { 3 }
+
+          it 'respects quality floor of 0' do
+            update_quality
+            expect(item.quality).to eq(0)
+          end
+        end
+      end
+
+      context 'quality boundaries' do
+        context 'minimum quality (0)' do
+          let(:quality) { 0 }
+          let(:sell_in) { 5 }
+
+          it 'prevents conjured items from going below 0' do
+            update_quality
+            expect(item.quality).to eq(0)
+          end
+        end
+
+        context 'respects maximum quality (50)' do
+          let(:quality) { 50 }
+          let(:sell_in) { 5 }
+
+          it 'degrades from maximum quality' do
+            update_quality
+            expect(item.quality).to eq(48)
+          end
+        end
+      end
+
+      context 'edge cases' do
+        it 'handles transition from positive to negative sell_in' do
+          conjured_item = Item.new('Conjured Mana Cake', 0, 20)
+          gilded_rose = GildedRose.new([conjured_item])
+
+          gilded_rose.update_quality
+
+          expect(conjured_item.quality).to eq(16) # degrades by 4 after sell date
+          expect(conjured_item.sell_in).to eq(-1)
+        end
+
+        it 'handles multiple days of degradation' do
+          conjured_item = Item.new('Conjured Mana Cake', 2, 20)
+          gilded_rose = GildedRose.new([conjured_item])
+
+          # Day 1: sell_in=2, quality=20 → sell_in=1, quality=18
+          gilded_rose.update_quality
+          expect(conjured_item.quality).to eq(18)
+          expect(conjured_item.sell_in).to eq(1)
+
+          # Day 2: sell_in=1, quality=18 → sell_in=0, quality=16
+          gilded_rose.update_quality
+          expect(conjured_item.quality).to eq(16)
+          expect(conjured_item.sell_in).to eq(0)
+
+          # Day 3: sell_in=0, quality=16 → sell_in=-1, quality=12 (4x degradation)
+          gilded_rose.update_quality
+          expect(conjured_item.quality).to eq(12)
+          expect(conjured_item.sell_in).to eq(-1)
+        end
+      end
     end
   end
 end
