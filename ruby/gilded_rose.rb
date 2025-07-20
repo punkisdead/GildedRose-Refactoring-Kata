@@ -7,13 +7,22 @@ class GildedRose
     @items = items
   end
 
+  SPECIAL_ITEMS = [
+    "Aged Brie",
+    "Backstage passes to a TAFKAL80ETC concert",
+    "Sulfuras, Hand of Ragnaros"
+  ].freeze
+
   # rubocop:disable Metrics/PerceivedComplexity
   # rubocop:disable Metrics/CyclomaticComplexity
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/AbcSize
   def update_quality
     @items.each do |item|
-      if (item.name != 'Aged Brie') && (item.name != 'Backstage passes to a TAFKAL80ETC concert')
+      if !SPECIAL_ITEMS.include?(item.name)
+        update_normal_item(item)
+        next
+      elsif (item.name != 'Aged Brie') && (item.name != 'Backstage passes to a TAFKAL80ETC concert')
         item.quality = item.quality - 1 if item.quality.positive? && (item.name != 'Sulfuras, Hand of Ragnaros')
       elsif item.quality < 50
         item.quality = item.quality + 1
@@ -40,6 +49,16 @@ class GildedRose
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
+
+  private
+
+  def update_normal_item(item)
+    item.sell_in -= 1
+    return if item.quality <= 0
+
+    item.quality -= 1
+    item.quality -= 1 if item.sell_in <= 0
+  end
 end
 
 # The item class which models items in the kata
