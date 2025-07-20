@@ -16,6 +16,8 @@ class GildedRose
         update_sulfuras(item)
       when 'Backstage passes to a TAFKAL80ETC concert'
         update_backstage_passes(item)
+      when /Conjured/
+        update_conjured_item(item)
       else
         update_normal_item(item)
       end
@@ -54,6 +56,16 @@ class GildedRose
     return unless item.sell_in.negative?
 
     item.quality = 0 # Backstage passes drop to 0 quality after the concert
+  end
+
+  def update_conjured_item(item)
+    item.sell_in -= 1
+    
+    return if item.quality <= 0
+    
+    # Degrade by 2 before sell date, by 4 after sell date
+    degradation = item.sell_in < 0 ? 4 : 2
+    item.quality = [item.quality - degradation, 0].max
   end
 end
 
