@@ -60,11 +60,11 @@ class GildedRose
 
   def update_conjured_item(item)
     item.sell_in -= 1
-    
+
     return if item.quality <= 0
-    
+
     # Degrade by 2 before sell date, by 4 after sell date
-    degradation = item.sell_in < 0 ? 4 : 2
+    degradation = item.sell_in.negative? ? 4 : 2
     item.quality = [item.quality - degradation, 0].max
   end
 end
